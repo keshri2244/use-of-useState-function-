@@ -1,31 +1,28 @@
-import './App.css'
-import { useState } from 'react';
- 
+
+
+import { useState, useEffect } from "react"
+
 function App() {
- 
-  const [count, setCount] = useState(0);
- 
-  
-  function increment() {
-    setCount(count + 1); 
-  }
- 
-  function decrement() {
-    setCount(count - 1);    
-  }
- 
-  function reset() {
-    setCount(0);         
-  }
- 
+  const [query, setQuery] = useState("")
+  const [results, setResults] = useState([])
+
+  useEffect(() => {
+    if (query === "") return
+
+    fetch(`https://jsonplaceholder.typicode.com/users?name_like=${query}`)
+      .then(res => res.json())
+      .then(data => setResults(data))
+  }, [query])
 
   return (
-    <div >
-      <h2 > Count: {count}</h2>
-      <button  onClick={increment}>+ Add</button>
-      <button onClick={decrement}>- Subtract</button>
-      <button onClick={reset}>Reset</button>
+    <div>
+      <input onChange={(e) => setQuery(e.target.value)} />
+
+      {results.map(r => (
+        <p key={r.id}>{r.name}</p>
+      ))}
     </div>
-  );
+  )
 }
- export default App
+
+export default App
